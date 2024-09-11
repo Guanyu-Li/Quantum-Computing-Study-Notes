@@ -1,0 +1,420 @@
+\chapter{相位近似及其应用}
+
+\section{量子相位近似}
+
+\begin{theorem}[谱分解]
+设 $ M $ 是一个 $ N \times N $ 的正规矩阵.设$\lambda_j $ 是矩阵 $M$ 的特征值,而 $\ket{\psi_j} $ 是对应的特征向量,那么有
+\begin{equation}
+M = \lambda_1 \ket{\psi_1}\bra{\psi_1} + \cdots + \lambda_N \ket{\psi_N}\bra{\psi_N}.
+\end{equation}
+即
+\begin{equation}
+M = \sum_{k=1}^{N} \lambda_k \ket{\psi_k}\bra{\psi_k} 
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+
+由于正规矩阵属于不同特征根的特征向量正交,则对于任意的归一化向量$\ket{v}$ 
+$$
+M \ket{v} = \sum_{k=1}^{N} M \braket{\psi_k | v}  \ket{\psi_k} = \sum_{k=1}^{N} \braket{\psi_k | v} \lambda_k \ket{\psi_k}=\sum_{k=1}^{N} \lambda_k \ket{\psi_k} \braket{\psi_k | v}.
+$$
+\end{proof}
+
+在相位估计问题中,给定 $ n $ 个量子位的量子态 $ \ket{\psi} $ 和作用在 $ n $ 个量子位上的量子电路.假设 $ \ket{\psi} $ 是该电路中酉矩阵 $ U $ 的特征向量,目标是识别或近似其对应的特征值 $ \lambda $.
+
+由于是酉矩阵所以 $ \lambda $ 位于复数单位圆上,可以写成
+$\lambda = e^{2\pi i \theta},$其中 $ \theta $ 是满足 $ 0 \leq \theta < 1 $ 的唯一实数.问题的目标是计算或近似这个实数 $ \theta $.
+
+\begin{explain}
+在相位估计问题中,随着 $ \theta = 0 $ 到 $ \theta = 1 $,也就是在单位圆上绕一圈.因此,当考虑近似的精确性时,接近 $ \theta = 1 $ 的值应该被视为接近 $ \theta = 0 $.例如,若近似值为 $ \theta = 0.999 $,则视为在 $ \theta = 0 $ 附近的 $0.001 $ 处.
+\end{explain}
+
+\subsection{低精度相位近似}
+
+解答这个问题,先从一个简单版本开始,考虑问题的低精度解:
+
+\begin{Quantikz}
+	\centering
+	\begin{quantikz}
+          \lstick{$\ket{0}$} &\gate{H}& \ctrl{1} & \gate{H} &  \meter{} \\
+          \lstick[8]{$\ket{\psi}$} && \gate[8]{U}&&  \\
+          &&&& \qw   \\
+          &&&& \qw   \\
+          &&&& \qw   \\
+          &&&& \qw   \\
+          &&&& \qw   \\
+          &&&& \qw   \\
+          &&&& \qw  
+	\end{quantikz}
+	\caption{低精度相位近}
+\end{Quantikz}
+
+初始状态为
+\begin{equation}
+\ket{\pi_1} = \ket{\psi}\ket{0},
+\end{equation}
+通过第一个H门后:
+\begin{equation}
+\ket{\pi_2} = \ket{\psi}\ket{+} = \frac{1}{\sqrt{2}} \ket{\psi}\ket{0} + \frac{1}{\sqrt{2}} \ket{\psi}\ket{1}.
+\end{equation}
+通过受控U门：
+\begin{equation}
+\ket{\pi_3} = \frac{1}{\sqrt{2}} \ket{\psi}\ket{0} + \frac{1}{\sqrt{2}} U\ket{\psi}\ket{1}.
+\end{equation}
+
+根据假设 $ \ket{\psi} $ 是 $ U $ 的特征向量,且其特征值为 $ \lambda = e^{2\pi i \theta} $,进一步有：
+\begin{equation}
+\ket{\pi_3} = \frac{1}{\sqrt{2}} \ket{\psi}\ket{0} + \frac{e^{2\pi i \theta}}{\sqrt{2}} \ket{\psi}\ket{1}.
+\end{equation}
+
+最后,为了区分开$\ket{0},~\ket{1}$对应的概率,通过第二个H门,状态变为：
+\begin{equation}
+\ket{\pi_4} = \ket{\psi} \otimes \left( \frac{1 + e^{2\pi i \theta}}{2} \ket{0} + \frac{1 - e^{2\pi i \theta}}{2} \ket{1} \right).
+\end{equation}
+
+测量后会得到 $ 0 $ 和 $ 1 $ 的结果,其概率分别为：
+\begin{equation}
+p_0 = \left| \frac{1 + e^{2\pi i \theta}}{2} \right|^2 = \cos^2(\pi \theta),
+\end{equation}
+\begin{equation}
+p_1 = \left| \frac{1 - e^{2\pi i \theta}}{2} \right|^2 = \sin^2(\pi \theta).
+\end{equation}
+
+显然这个概率和为1,测量结果总是 $ 0 $时, $ \theta = 0 $ .而当测量结果总是 $ 1 $时, $ \theta = 1/2 $ .并且越接近这两个测量结果,越可以知道$ \theta$的近似值.因此,虽然测量结果不能精确反映 $ \theta $的值(显然$p_0$和$p_1$取其它值的时候,无法确定$ \theta$具体是什么),但它确实提供了关于 $ \theta $ 的一些信息.
+
+
+
+
+
+\subsection{二量子位相位近似}
+
+首先考虑两个受控$U$门的结果：
+\begin{Quantikz}
+	\centering
+	\begin{quantikz}
+		\lstick{$\ket{0}$} & \gate{H}& \ctrl{1}&& \ctrl{1} & \gate{H} &  \meter{} \\
+		\lstick[8]{$\ket{\psi}$} && \gate[8]{U}&&\gate[8]{U} &&  \\
+		&&&&& \qw &  \\
+		&&&&& \qw &  \\
+		&&&&& \qw & \qw  \\
+		&&&&& \qw & \\
+		&&&&& \qw & \\
+		&&&&& \qw &  \\
+		&&&&& \qw &
+	\end{quantikz}
+	\caption{双相位}
+\end{Quantikz}
+
+此时,我们考虑的就是$U^2$的相位近似,如果$ \ket{\psi} $ 是 $ U $ 的特征向量,且其特征值为 $ \lambda = e^{2\pi i \theta} $,那么他也是$U^2$的特征向量,对应特征值为 $ \lambda = e^{2\pi i (2 \theta)} $.为此我们考虑结合双相位矩阵以及使用两个初始量子位,这样的话或许可以获得更多关于目标$\theta$的信息.
+
+\begin{Quantikz}
+	\centering
+	\begin{quantikz}
+		\lstick{$\ket{0}$} & \gate{H}\slice{$\ket{\pi_1}$}&& \ctrl{2}\slice{$\ket{\pi_2}$}&&& & \slice{$\ket{\pi_3}$}& \\
+		\lstick{$\ket{0}$} & \gate{H}&&&& \ctrl{1}&& \ctrl{1} & \\
+		\lstick[8]{$\ket{\psi}$} &&&\gate[8]{U}&& \gate[8]{U}&&\gate[8]{U}&  \\
+		&&&&&&&& \qw   \\
+		&&&&&&&& \qw   \\
+		&&&&&&&& \qw   \\
+		&&&&&&&& \qw   \\
+		&&&&&&&& \qw   \\
+		&&&&&&&& \qw   \\
+		&&&&&&&& \qw  
+	\end{quantikz}
+	\caption{双相位双量子位相位近似}\label{doublephase2}
+\end{Quantikz}
+
+\cref{doublephase2}中后面的H门已被移除,并且没有测量.我们将随着探讨如何从电路中尽可能多地挖掘 $\theta$ 的信息来继续完善电路.
+
+如果我们运行这个电路,底部量子位的状态在整个电路中都会保持为 $\ket{\psi}$(由于这是特征向量),相位将会被收集到顶部两个量子位的状态中.
+
+\begin{equation}
+	\ket{\pi_1} = \ket{\psi} \otimes \frac{1}{2} \sum_{a_0=0}^{1} \sum_{a_1=0}^{1} \ket{a_1 a_0}.
+\end{equation}
+
+经过第一个受控$U$门 ,当且仅当 $a_0=1$时生效,而当 $a_0=0$ 时不生效.
+
+\begin{equation}
+	\ket{\pi_2} = \ket{\psi} \otimes \frac{1}{2} \sum_{a_0=0}^{1} \sum_{a_1=0}^{1} e^{2\pi i a_0 \theta} \ket{a_1 a_0}.
+\end{equation}
+
+第二和第三个受控$U$门的作用类似,但变成了对 $a_1$进行操作,并将 $\theta$ 替换为 $2\theta$.可以将结果写成如下形式：
+
+\begin{equation}
+	\ket{\pi_3} = \ket{\psi} \otimes \frac{1}{2} \sum_{a_0=0}^{1} \sum_{a_1=0}^{1} e^{2\pi i (2a_1 + a_0)\theta} \ket{a_1 a_0}.
+\end{equation}
+
+令 $x=2a_1 + a_0$,我们可以将状态重新表达为：
+
+\begin{equation}
+	\ket{\pi_3} = \ket{\psi} \otimes \frac{1}{2} \sum_{x=0}^{3} e^{2\pi ix\theta} \ket{x}.
+\end{equation}
+
+我们的目标还是从这个状态中尽可能多地提取有关 $\theta$ 的信息.考虑一个特殊情况,假设 $\theta = \frac{y}{4}$,其中 $y \in \{0,1,2,3\}$.换句话说,我们有 $\theta \in \{0, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}\}$,因此我们可以使用两个二进制位精确表示这些值,分别为 $00$、$01$、$10$ 和 $11$.虽然一般情况下 $\theta$ 可能不是这四个值中的一个,但通过考虑这一特殊情况,我们可以了解如何最有效地提取这个值的信息.
+
+我们为每个可能的 $y \in \{0,1,2,3\}$ 定义一个两量子位的状态向量：
+
+\begin{equation}
+	\ket{\phi_y} = \frac{1}{2} \sum_{x=0}^{3} e^{2\pi i x \frac{y}{4}} \ket{x}.
+\end{equation}
+写开就是：
+\begin{equation}
+\begin{aligned}
+\ket{\phi_0} &= \frac{1}{2} \ket{0} + \frac{1}{2} \ket{1} + \frac{1}{2} \ket{2} + \frac{1}{2} \ket{3}, \\
+\ket{\phi_1} &= \frac{1}{2} \ket{0} + \frac{i}{2} \ket{1} - \frac{1}{2} \ket{2} - \frac{i}{2} \ket{3}, \\
+\ket{\phi_2} &= \frac{1}{2} \ket{0} - \frac{1}{2} \ket{1} + \frac{1}{2} \ket{2} - \frac{1}{2} \ket{3}, \\
+\ket{\phi_3} &= \frac{1}{2} \ket{0} - \frac{i}{2} \ket{1} - \frac{1}{2} \ket{2} + \frac{i}{2} \ket{3}.
+\end{aligned}
+\end{equation}
+
+容易验证这些向量是正交并且每个向量也是单位向量,这意味着 $\{\ket{\phi_0}, \ket{\phi_1}, \ket{\phi_2}, \ket{\phi_3}\}$ 是一个正交且归一化的基,因此存在一个测量可以完美区分它们.
+
+\begin{Quantikz}
+	\centering
+	\begin{quantikz}
+		\lstick{$\ket{0}$} & \gate{H}&& \ctrl{2}&&& &&\gate[2]{QFT_4^{H}} &\meter{} \\
+		\lstick{$\ket{0}$} & \gate{H}&&&& \ctrl{1}&& \ctrl{1} &&\meter{} \\
+		\lstick[8]{$\ket{\psi}$} &&&\gate[8]{U}&& \gate[8]{U}&&\gate[8]{U}&  \\
+		&&&&&& \qw  && \\
+		&&&&&& \qw  &&\\
+		&&&&&& \qw  &&\\
+		&&&&&& \qw  && \\
+		&&&&&& \qw  && \\
+		&&&&&& \qw  && \\
+		&&&&&& \qw  &&
+	\end{quantikz}
+	\caption{双相位相位近似}
+\end{Quantikz}
+
+为了使用量子电路进行这种区分,可以选取酉矩阵 $V$,使得:
+\begin{equation}
+	\begin{aligned}
+	V \ket{00} &= \ket{\phi_0}, \\
+	\quad V \ket{01} &= \ket{\phi_1}, \\
+	\quad V \ket{10} &= \ket{\phi_2}, \\
+	\quad V \ket{11} &= \ket{\phi_3}.
+\end{aligned}
+\end{equation}
+
+整理成矩阵形式:
+\begin{equation}
+	V = \frac{1}{2}
+	\begin{pmatrix}
+		1 & 1 & 1 & 1 \\
+		1 & i & -1 & -i \\
+		1 & -1 & 1 & -1 \\
+		1 & -i & -1 & i
+	\end{pmatrix}.
+\end{equation}
+由于这个矩阵还与四维离散傅里叶变换相关,鉴于这一事实,不妨称其为 $QFT_4$.
+
+ $QFT_4$ 将标准态映射到上述四个可能的状态,那此时我们也可以反向执行此操作,将 $\ket{\phi_0}, \dots, \ket{\phi_3}$ 转换为标准基态 $\ket{0}, \dots, \ket{3}$.也就是可以通过测量来确定哪个值 $y \in \{0,1,2,3\}$ 对应着 $\theta$,即 $\theta = \frac{y}{4}$.
+
+也就是说,如果有 $\theta = \frac{y}{4}$ ($y \in \{0,1,2,3\}$)这样的限定条件,之后运行此电路,则进行测量前的量子态为 $\ket{\psi}\ket{y}$,这里的$y$是二进制数字,也就是说这个测量将毫无误差地得到 $y$ 的值.这个量子电路与前面的单量子位版本相比,是一个明显的改进,不过还是需要$\theta$接近于$\frac{y}{4}$,才能得到较为准确的结果.不过这提供了一个思路,那就是可以通过增加更多的量子位,来把$\theta$分成更多份来实现更精确的近似.
+
+自然的,现在我们考虑 $ U^{2^{m-1}}$门:
+$$
+  U^{2^{m-1}} \ket{\psi}=e^{2 \pi i 2^{m-1}} \ket{\psi}.
+$$
+也就是此时$\theta = \dfrac{x_{m-1}}{2^{m-1}}$,近似结果精准.现在考虑初始使用$m$个量子位,有:
+$$
+\theta=\sum_{j=1}^{m} \frac{x_j}{2^j}=0.x_1 x_2 \ldots x_m.
+$$
+则
+$$
+ U^{2^k} \ket{\psi} = e^{2 \pi i 2^k \theta}= e^{2 \pi i 0.x_{k+1}x_{k+2} \ldots x_{n}} \ket{\psi}.
+$$
+
+\begin{Quantikz}
+	\centering
+	\begin{quantikz}
+		\lstick[4]{$\ket{0^m}$} & \gate{H}&& \ctrl{4}&&&&&&\rstick{$\frac{1}{\sqrt{2}} \left( \ket{0} + e^{2\pi i 0.x_1x_2 \ldots x_m} \ket{1} \right)$} \\
+		&\gate{H}&&&& \ctrl{3}&&&&\rstick{$\frac{1}{\sqrt{2}} \left( \ket{0} + e^{2\pi i 0.x_2x_3 \ldots x_m} \ket{1} \right)$} \\		
+		\lstick{}\rstick{} \\			
+		&\gate{H}&&&&&& \ctrl{1}&&\rstick{$\frac{1}{\sqrt{2}} \left( \ket{0} + e^{2\pi i 0.x_m} \ket{1} \right)$}\\		
+		\lstick[8]{$\ket{\psi}$} &&&\gate[8][1.5cm]{U}&& \gate[8][1.5cm]{U^2}&&\gate[8][1.5cm]{U^{2^{m-1}}}&&\rstick[8]{$\ket{\psi}$}  \\
+		&&&&&& \qw  &&& \\
+		&&&&&& \qw  &&&\\
+		&&&&&& \qw  &&&\\
+		&&&&&& \qw  &&& \\
+		&&&&&& \qw  &&& \\
+		&&&&&& \qw  &&& \\
+		&&&&&& \qw  &&&
+	\end{quantikz}
+	\caption{精确相位近似}
+\end{Quantikz}
+
+注意到,输出的量子态为:
+\begin{equation}
+	\begin{aligned} 
+		&\quad \bigotimes_{i=1}^{m} \frac{1}{\sqrt{2}} \left( \ket{0} + e^{2\pi i \cdot 0.x_{m+1-i} \cdots x_m} \ket{1} \right)\\
+		&= \frac{1}{\sqrt{2^m}} (e^{ \frac{2\pi i  2^{m-1} x y_{m-1} }{2^m}} \ket{y_{m-1}}+ e^{ \frac{2\pi i  2^{m-2} x y_{m-2} }{2^m}} \ket{y_{m-2}} + \cdots + e^{ \frac{2\pi i x y_{0} }{2^m}} \ket{y_{0}})\\
+		&=\frac{1}{\sqrt{2^m}} \sum_{y = 0}^{2^m-1} e^{ \frac{2\pi i   x y}{2^m}}\ket{y}.	
+	\end{aligned}
+\end{equation}
+
+这是我们所熟悉的形式,看起来就像傅里叶变换的表达式,所以我们来考虑量子傅立叶变换变换,从而使用逆变换得到正交的标准基$\ket{x}$从而通过测量得到对应的结果.
+
+
+\section{量子傅立叶变换}
+首先, 考虑一个$2^n$维数组$\{x_j\}$($j=0, \cdots, 2^n-1$), 离散傅立叶变换$\{y_k\}$($k=0, \cdots, 2^n-1$)为:
+\begin{equation}
+	y_k = \frac{1}{\sqrt{2^n}} \sum_{j=0}^{2^n-1} x_j e^{\frac{2\pi i kj}{2^n}}.
+\end{equation}
+
+实际上量子傅立叶变换算法相当于把这个数组整理成向量再规定归一化条件成为量子态, 这样就可以定义 $N$ 维的量子傅里叶变换:
+\begin{equation}
+	\ket{\phi_y} = \frac{1}{\sqrt{N}} \sum_{x=0}^{N-1} e^{\frac{2\pi i xy}{N}} \ket{x}
+\end{equation}
+
+我们把$\phi_y$当成矩阵的列,则这个变换可以整理成一个 $N \times N$ 的矩阵:
+\begin{equation}
+	QFT_N = \frac{1}{\sqrt{N}} \sum_{x=0}^{N-1} \sum_{y=0}^{N-1} e^{\frac{2\pi i xy}{N}} \ket{x} \bra{y}
+\end{equation}
+下面是一些量子傅里叶变换矩阵：
+\[
+QFT_1 = \begin{pmatrix} 1 \end{pmatrix}
+\]
+
+\[
+QFT_2 = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}
+\]
+
+\[
+QFT_3 = \frac{1}{\sqrt{3}} \begin{pmatrix}
+	1 & 1 & 1 \\
+	1 & \frac{-1 + i \sqrt{3}}{2} & \frac{-1 - i \sqrt{3}}{2} \\
+	1 & \frac{-1 - i \sqrt{3}}{2} & \frac{-1 + i \sqrt{3}}{2}
+\end{pmatrix}
+\]
+
+\[
+QFT_4 = \frac{1}{2} \begin{pmatrix} 1 & 1 & 1 & 1 \\ 1 & i & -1 & -i \\ 1 & -1 & 1 & -1 \\ 1 & -i & -1 & i \end{pmatrix}
+\]
+
+特别的,$QFT_2$ 也就是我们常用的$H$门.下面来验证 $QFT_N$ 是酉矩阵,往证$\{ \ket{\phi_0}, \dots, \ket{\phi_{N-1}} \}$是正交的.
+
+\begin{equation}
+	\braket{\phi_z | \phi_y} = \frac{1}{N} \sum_{x=0}^{N-1} e^{\frac{2\pi i x (y-z)}{N}}
+\end{equation}
+
+令$\alpha = e^{\frac{2\pi i (y-z)}{N}}$,原式变为$\frac{1}{N} \sum_{x=0}^{N-1} \alpha^x $.注意到:
+
+\begin{equation}
+	1 + \alpha + \alpha^2 + \dots + \alpha^{N-1} = \begin{cases} \frac{\alpha^N - 1}{\alpha - 1}, & \text{若 } \alpha \neq 1 \\ N, & \text{若 } \alpha = 1 \end{cases}
+\end{equation}
+
+特别地,当 $\alpha = e^{\frac{2\pi i (y-z)}{N}}$,且当 $y = z$ 时,$\alpha = 1$,因此内积为：
+
+\begin{equation}
+	\braket{\phi_y | \phi_y} = 1
+\end{equation}
+
+当 $y \neq z$ 时,$\alpha^N= 1$,所以
+
+\begin{equation}
+	\braket{\phi_z | \phi_y} = 0
+\end{equation}
+
+这表明 $\{ \ket{\phi_0}, \dots, \ket{\phi_{N-1}} \}$ 是一个正交归一集,因此 $QFT_N$ 是酉矩阵.
+
+
+为了在量子电路中实现量子傅里叶变换,需要使用受控相位门,形式如下：
+
+\begin{equation}
+	P_\alpha = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\alpha} \end{pmatrix}
+\end{equation}
+我们可以用这样的量子电路来表示受控相位门：
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.3\textwidth}
+		\centering
+		\vspace{-0.5cm} % 向上移动
+		\begin{quantikz}
+			& \gate{P_{\alpha}} & \\
+			& \ctrl{-1} & 
+		\end{quantikz}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.3\textwidth}
+		\centering
+		\begin{quantikz}
+			& \ctrl{1} & \\
+			& \gate{P_{\alpha}} & 
+		\end{quantikz}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.3\textwidth}
+		\centering
+		\vspace{-0.3cm} % 向上移动
+		\begin{quantikz}
+			& \phase[label style={anchor=north, xshift=-0.15cm, yshift=0.2cm}]{\alpha} & \\
+			& \ctrl{-1} &             
+		\end{quantikz}
+	\end{minipage}
+\end{figure}
+
+受控相位门可以实现如下变换:
+\begin{equation}
+	\ket{y} \ket{a} \mapsto e^{\frac{2\pi i ay}{2^{m}}} \ket{y} \ket{a}
+\end{equation}
+其中 $a$ 是某一个比特,$y \in \{0, \dots, 2^m - 1\}$ 是一个用二进制表示的 $m$ 位数字.以$m=5$为例,有:
+\begin{Quantikz}
+	\centering
+	\begin{quantikz}
+		\lstick{$\ket{a}$} & \phase[label style={anchor=north, xshift=-0.15cm, yshift=0.4cm}]{\frac{\pi}{16}} &\phase[label style={anchor=north, xshift=-0.15cm, yshift=0.4cm}] {\frac{\pi}{8}} & \phase[label style={anchor=north, xshift=-0.15cm, yshift=0.4cm}] {\frac{\pi}{4}}& \phase[label style={anchor=north, xshift=-0.15cm, yshift=0.4cm}] {\frac{\pi}{2}}& \qw \\
+		\lstick{$\ket{y_0}$} &\ctrl{-1} &&&&\\
+		\lstick{$\ket{y_1}$} &&\ctrl{-2} &&&\\
+		\lstick{$\ket{y_2}$} &&&\ctrl{-3} &&\\
+		\lstick{$\ket{y_3}$} &&&&\ctrl{-4} &\\
+	\end{quantikz}
+	\caption{双相位相位近似}
+\end{Quantikz}
+
+
+对 $m \geq 2$ 的情况下,我们可以执行以下操作：
+
+首先,对底部$m-1$ 个量子比特执行 $2^{m-1}$ 维的量子傅里叶变换,得到：
+
+\begin{equation}
+	(QFT_{2^{m-1}} \ket{x}) \ket{a} = \frac{1}{\sqrt{2^{m-1}}} \sum_{y=0}^{2^{m-1}-1} e^{\frac{2\pi i xy}{2^{m-1}}} \ket{y} \ket{a}.
+\end{equation}
+
+使用顶部量子比特作为控制位,向其余 $m-1$ 个量子比特中的每个标准基态 $\ket{y}$ 加入相位,得到：
+
+\begin{equation}
+	\frac{1}{\sqrt{2^{m-1}}} \sum_{y=0}^{2^{m-1}-1} e^{\frac{2\pi i xy}{2^{m-1}}} e^{\frac{2\pi i ay}{2^{m}}}\ket{y} \ket{a}.
+\end{equation}
+
+顶部量子比特执行$H$门,为了方便表示可以写作:
+\begin{equation}
+	\frac{1}{\sqrt{2^m}} \sum_{y=0}^{2^{m-1}-1} \sum_{b=0}^{1} (-1)^{ab} e^{\frac{2\pi i xy}{2^{m-1}}} e^{\frac{2\pi i ay}{2^m}} \ket{y} \ket{b}.
+\end{equation}
+
+对量子比特的顺序进行重排：
+\begin{equation}
+	\frac{1}{\sqrt{2^m}} \sum_{y=0}^{2^{m-1}-1} \sum_{b=0}^{1} (-1)^{ab} e^{\frac{2\pi ixy} {2^{m-1}}} e^{\frac{2\pi i ay}{2^m}}\ket{b} \ket{y}.
+\end{equation}
+
+接下来我们举一个$N=2^4$的例子:
+\begin{Quantikz}
+	\centering
+\begin{quantikz}
+	\lstick{$a$} && \phase[label style={anchor=north, xshift=-0.15cm, yshift=0.4cm}]{\frac{\pi}{8}} & \phase[label style={anchor=north, xshift=-0.15cm, yshift=0.4cm}]{\frac{\pi}{4}} & \phase[label style={anchor=north, xshift=-0.15cm, yshift=0.4cm}]{\frac{\pi}{2}} & \gate{H} & \swap{3} & \swap{1}& \qw & \rstick{$y_0$}\\
+	\lstick{$x_0$} & \gate[3]{QFT_8} & \ctrl{-1} & \qw & \qw & &&\targX{}&\swap{1} \qw & \qw \rstick{$y_1$}\\
+	\lstick{$x_1$} & \qw && \ctrl{-2} & \qw & \qw & \qw & \qw & \targX{} &\rstick{$y_2$} \\
+	\lstick{$x_2$} & \qw & \qw && \ctrl{-3} & \qw & \targX{} & \qw&&\rstick{$b$}
+\end{quantikz}
+	\caption{双相位相位近似}
+\end{Quantikz}
+
+
+这种实现方法实际上就是经典的快速傅里叶变换算法在量子电路中的实现,在这里可能会有这样的疑问,为什么要使用控制相位门,进行迭代的操作,而不是直接用QFT矩阵.这和前面提到过的通用量子门集有关,不是所有的酉矩阵都可以方便的拿来作为量子门的,通常还是习惯使用通用量子门,这和硬件是有关系的.
+
+
+
+
+
+
+

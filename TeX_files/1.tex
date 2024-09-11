@@ -1,0 +1,651 @@
+\chapter{预备知识}
+
+
+\section{基础假设}
+
+量子力学的数学理论首先要承认下面四条假设, 这些假设目前并没有被严格的推导证明, 只是从反复多次的实验结果中分析总结得到的, 目前所有的实验结果都可以很好的遵循量子力学当前的理论.
+
+\subsection{状态空间假设}
+量子系统的所有量子态构成希尔伯特空间, 称为状态空间.
+
+如果状态空间是有限维的, 则它与$\mathbb{C}^N$同构.非负整数$n$称为量子比特数, 设$N=2^n$, 那么此时量子态可以表示为:
+\begin{align*}
+	\psi = \begin{pmatrix}
+		\psi_0 \\
+		\psi_1 \\
+		\vdots \\
+		\psi_{N-1}
+	\end{pmatrix},
+\end{align*}
+
+它的共轭转置表示为$\psi^\dagger = (\psi_0^*, \psi_1^*, \ldots, \psi_{N-1}^*)$, 其中$c^*$是$c\in\mathbb{C}$的复共轭.在量子计算中还通常使用Dirac符号, 用$|\psi\rangle$表示一个量子态, $\langle\psi|$表示其共轭转置, 内积定义为$\langle\phi|\psi\rangle = \sum_{i=0}^{N-1} \phi_i^* \psi_i$, 不过要写成这种量子态的形式还是需要满足归一化, 也就是$\langle\phi|\psi\rangle =1$.
+
+所以任何一个$|\psi\rangle$都可以在一个给定的正交归一基 $ \{|e_i\rangle\} $ ($ \langle e_{i}|e_{j}\rangle =\delta _{ij}$)中展开为:
+$
+|\psi \rangle = \sum_i c_i |e_i\rangle,
+$
+其中$ c_i = \langle e_i | \psi \rangle $ 是复系数,称为量子态 $ |\psi \rangle $ 在基态 $ |e_i\rangle $ 上的概率振幅.通常也把状态$ |\psi \rangle $在位置$x$上的概率振幅定义为波函数:
+\begin{equation}
+	\varphi(x) = \langle x | \psi \rangle	,
+\end{equation}
+$ |c_i|^2$表示在基态$|e_i\rangle$中被发现的概率.
+
+由归一化条件有:
+$
+\langle \psi | \psi \rangle = \sum_i |c_i|^2 \coloneqq \sum_i |\varphi(e_i)|^2 = 1.
+$
+
+考虑$\ket{+}$和$\ket{-}$,很自然的有这样一个疑问,那就是他们的概率是相同的,那为什么还要区分这两个量子态.这个问题\cref{sec3}中可以得到解释.
+
+如果状态空间是无限维的,例如考虑一个量子在一维空间中的行为,那么其状态空间是无限维的,并且基底是连续的,也就是说所可观测量(在后面量子测量中会提到)填满了整个数轴.此时
+\begin{equation}
+	|\psi\rangle = \int_{-\infty}^{\infty} \varphi(x) |x\rangle \, dx.
+\end{equation}
+其中$ \langle x|x'\rangle =\delta (x-x')$.
+
+同样的,由归一化条件有:
+$$
+\langle \psi | \psi \rangle =  \int_{-\infty}^{\infty} \delta (x-x') \langle \psi | x' \rangle \langle x | \psi \rangle dx \  = \int_{-\infty}^{\infty} \ | \langle x | \psi \rangle |^{2} dx \coloneqq \int_{-\infty}^{\infty} \ |\varphi(x)  |^{2} dx = 1.
+$$
+
+常用到的符号还有:
+$\ket{\pm}=\dfrac{1}{\sqrt{2}}(\ket{0}\pm\ket{1}),~\overline{\ket{0}}=\ket{1}, \overline{\ket{1}}=\ket{0},~\{0,1\}^n$表示长度为$n$的所有二进制字符串的集合.
+
+\begin{explain}[经典状态以及概率向量]\label{classicalstate}
+在经典问题中,例如骰子,经典状态为(可能出现的结果)1,2,3,4,5,6;抛硬币,经典状态为正面和反面.在这里可以把经典状态集记为 $ \Sigma $,比特则是$ \Sigma $=$\{0,1\}$的系统.我们也可以为每个经典状态分配概率来表示对其了解的程度,例如抛硬币,记正面为0,背面为1,那么我们相信在次数足够多的时候会有$Pr(X = 0) = \dfrac{1}{2} ,~ Pr(X = 1) = \dfrac{1}{2}$,一个更简洁的写法是通过一个向量的形式:
+$\begin{pmatrix}
+	1/2 \\
+	1/2
+\end{pmatrix}$.
+\end{explain}
+
+\begin{explain}
+	为了方便,可以使用$\ket{N}$来描述标准基$ \{|e_i\rangle\} $ ,这是一个二进制表示,例如对于 $N=4$,基态 $\ket{y}$ 的值可以是 $\ket{0}, \ket{1}, \ket{2},\ket{3}$,分别对应二进制表示：
+	$$
+	\ket{0} = \ket{00}, \quad
+	\ket{1} = \ket{01}, \quad
+	\ket{2} = \ket{10}, \quad
+	\ket{3} = \ket{11}
+	$$
+	
+	对于 $N=8$,基态 $\ket{y}$ 的值可以是 $\ket{0}, \ket{1}, \dots, \ket{7}$,分别对应二进制表示：
+	$$
+	\ket{0} = \ket{000}, \quad
+	\ket{1} = \ket{001}, \quad
+	\ket{2} = \ket{010}, \quad
+	\ket{3} = \ket{011}, \quad
+	\ket{4} = \ket{100}, \quad
+	\ket{5} = \ket{101}, \quad
+	\ket{6} = \ket{110}, \quad
+	\ket{7} = \ket{111}
+	$$
+\end{explain}
+
+\subsection{演化算子假设}\label{sec3}
+以$N$量子位为例,量子态的演化总是通过一个酉矩阵$U \in \mathbb{C}^{N\times N}$实现, 即
+\begin{align*}
+	|\psi'\rangle = U|\psi\rangle, ~ UU^\dagger = U^\dagger U = I_N.
+\end{align*}
+其中$U^\dagger$是$U$的共轭转置, $I_N$是$N$维单位矩阵.
+
+可以定义范数:
+\begin{equation}
+    \||\psi\rangle \|=\sqrt{\langle\psi \mid \psi\rangle},~
+	 \|A\|:=\max _{|\psi\rangle}\| A|\psi\rangle \|.
+\end{equation}
+
+
+在定义了范数之后自然就有了距离可以用来衡量误差,在这个基础上,由于实际应用中一个算法可能会涉及到很多量子门,接下来考察多个量子门产生的误差.
+\begin{lemma} \label{thm:the1}
+	$U_i, V_i$ 是酉矩阵,满足 $\left\|U_i-V_i\right\| \leq \epsilon(i=1,2,3...)$,  则$\left\|U_t \ldots U_2 U_1-V_t \ldots V_2 V_1\right\| \leq t \epsilon$.
+\end{lemma}
+\begin{proof}
+	$$
+	\begin{aligned}
+		& \left\|U_{t+1} U_t \ldots U_1-V_{t+1} V_t \ldots V_1\right\| \\
+		& \quad=\left\|U_{t+1} U_t \ldots U_1-U_{t+1} V_t \ldots V_1+U_{t+1} V_t \ldots V_1-V_{t+1} V_t \ldots V_1\right\| \\
+		& \quad \leq\left\|U_{t+1} U_t \ldots U_1-U_{t+1} V_t \ldots V_1\right\|+\left\|U_{t+1} V_t \ldots V_1-V_{t+1} V_t \ldots V_1\right\| \\
+		& \quad=\left\|U_{t+1}\left(U_t \ldots U_1-V_t \ldots V_1\right)\right\|+\left\|\left(U_{t+1}-V_{t+1}\right) V_t \ldots V_1\right\| \\
+		& \quad=\left\|U_t \ldots U_1-V_t \ldots V_1\right\|+\left\|U_{t+1}-V_{t+1}\right\| \\
+		& \quad \leq(t+1) \epsilon.
+	\end{aligned}
+	$$
+\end{proof}
+
+
+\begin{example}
+	在量子计算中,习惯于把演化算子所对应的酉矩阵称为量子门,以下是几个常见的量子门:
+	\begin{spacing}{1}
+		\begin{itemize}
+			\item Hadamard门 (H门):
+			$$
+			H = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}\label{H-gate}
+			$$
+			
+			通过计算可以得到$H\ket{+}=\ket{0},~H\ket{-}=\ket{1}$,这也就解释了为什么要区分$\ket{+}$和$\ket{-}$.
+			
+			\item Phase门 (S门):
+			$$
+			S = \begin{pmatrix} 1 & 0 \\ 0 & i \end{pmatrix}
+			$$
+			
+			\item $\pi/8$门 (T门):
+			$
+			T = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{pmatrix}
+			$
+			
+			\item CNOT门:
+			$$
+			\text{CNOT} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{pmatrix}
+			$$
+			
+			\item 泡利矩阵\label{pauli}:
+			$$
+			\sigma_x \text{(NOT门)} = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad
+			\sigma_y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad
+			\sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}
+			$$
+		\end{itemize}
+	\end{spacing}
+\end{example}
+
+
+\begin{definition}
+	行列式的模为1的$n \times n$酉矩阵以矩阵乘法作为运算构成一个李群,记作$\mathrm{SU}(n)$.
+\end{definition}
+
+如果将这个群中的一个元素写做 $e^{iA}$ ,那么因为 $e^{iA} e^{-iA^{\dagger}}= I$ ,有 $e^{-iA^{\dagger}} = e^{-iA}$ . 因此,就有 $A = A^{\dagger}$ ,也就是 A 是Hermite矩阵.又因为 $\text{det}(e^{iA}) = e^{i\text{Tr} A} = 1 $,所以 $\text{Tr} A = 0 $,任意一个零迹二阶Hermite矩阵都可以用三个泡利矩阵\cref{pauli}的线性组合给出. 于是可以把任意一个$\mathrm{SU}(2)$的群元素写做 
+\begin{equation}
+	U = e^{i \alpha \boldsymbol{\sigma}},
+\end{equation}
+其中$\vec{a} \in \mathbb{R}^3$ , $\vec{\sigma}=\left(\sigma_x, \sigma_y, \sigma_z\right)$.
+
+根据\cref{thm:the1}可以知道,想要保证t个门误差控制在$\epsilon$以内,只需保证每一个门误差控制在$\epsilon /t$以内.对于任意一个单个的门,为了设计方便,通过类比经典的通用门,我们也想构造通用量子门集,这就需要考虑利用群对易子$\llbracket U, V\rrbracket:=U V U^{-1} V^{-1} $来构建一个网格,覆盖整个以$I$为圆心的小球上(对于其它的酉矩阵平移到$I$即可).令
+\begin{equation}
+	S_\epsilon:=\{U \in \mathrm{SU}(2):\|I-U\| \leq \epsilon\}.
+\end{equation}
+
+对于集合$\Gamma, S \subseteq \mathrm{SU}(2)$,如果对于$S$中的任意一个$A$,在$\Gamma$中有一个$U$,使得$\|A-U\| \leq \epsilon$,我们就说$\Gamma$是$S$的一个$\epsilon$-网.
+\begin{lemma}
+	如果 $\Gamma$ 是$S_\epsilon$的$\epsilon^2$-网,那么$\llbracket \Gamma, \Gamma \rrbracket:=\{\llbracket U, V \rrbracket: U, V \in \Gamma\}$是 $S_{\epsilon^2}$ 的一个 $O\left(\epsilon^3\right)$-网.
+\end{lemma}
+\begin{proof}
+	由$\mathrm{SU}(2)$群的性质可知
+	\begin{align*}
+		& \text{(i) } \left\|I-e^{i \vec{a} \cdot \vec{\sigma}}\right\|=2 \sin \frac{\|\vec{a}\|}{2}=\|\vec{a}\|+O\left(\|\vec{a}\|^3\right) ;& \\
+		& \text{(ii) } \left\|e^{i \vec{b} \cdot \vec{\sigma}}-e^{i \vec{c} \cdot \vec{\sigma}}\right\| \leq\|\vec{b}-\vec{c}\|; & \\
+		& \text{(iii) } [\vec{b} \cdot \vec{\sigma}, \vec{c} \cdot \vec{\sigma}]=2 i(\vec{b} \times \vec{c}) \cdot \vec{\sigma} ;& \\
+		& \text{(iv) } \left\|\llbracket e^{i \vec{b} \cdot \vec{\sigma}}, e^{i \vec{c} \cdot \vec{\sigma}} \rrbracket-e^{-[\vec{b} \cdot \vec{\sigma}, \vec{c} \cdot \vec{\sigma}]}\right\|=O(\|\vec{b}\|\|\vec{c}\|(\|\vec{b}\|+\|\vec{c}\|)). &
+	\end{align*}
+	其中,$[A,B]$在物理中表示对易子$AB-BA$.
+	
+	对于$A \in S_{\epsilon^2}$,往证存在$U, V \in \Gamma$中 ,使得 $\|A-\llbracket U, V \rrbracket\|=O\left(\epsilon^3\right)$.
+	选取 $\vec{a} \in \mathbb{R}^3$,使得 $A=e^{i \vec{a} \cdot \vec{\sigma}}$.由于$A \in S_{\epsilon^2}$,根据（i）,可以选取$\vec{a}$,使得$\|\vec{a}\|=O\left(\epsilon^2\right)$.
+	然后选取 $\vec{b}, \vec{c} \in \mathbb{R}^3$ 使得 $2 \vec{b} \times \vec{c}=\vec{a}$.不妨设这些向量是正交且等长的,这样$\|\vec{b}\|=\|\vec{c}\|=\sqrt{\|\vec{a}\| / 2}=O(\epsilon)$.令$B=e^{i \vec{b} \cdot \vec{\sigma}}$ 并且 $C=e^{i \vec{c} \cdot \vec{\sigma}}$.那么由 (iv) 可知$A$ 被 $\llbracket B, C \rrbracket$ 模拟所产生的误差为 $O\left(\epsilon^3\right)$.
+	
+	然后,需要从网 $\Gamma$ 中选择点.让 $U=e^{i \vec{u} \cdot \vec{\sigma}}$ 成为 $\Gamma$ 中离 $B$ 最近的元素,让 $V=e^{i \vec{v} \cdot \vec{\sigma}}$ 成为 $\Gamma$ 中离 $C$最近的元素.由于 $\Gamma$ 是 $S_\epsilon$ 的 $\epsilon^2$ 网,有 $\|U-B\| \leq \epsilon^2$,$\|V-C\| \leq \epsilon^2$,即$\|\vec{u}-\vec{b}\|=O\left(\epsilon^2\right)$ 和 $\|\vec{v}-\vec{c}\|=O\left(\epsilon^2\right)$.
+	
+	根据三角形不等式,
+	$$
+	\|A-\llbracket U, V \rrbracket\| \leq\left\|A-e^{2 i(\vec{u} \times \vec{v}) \cdot \vec{\sigma}}\right\|+\left\|e^{2 i(\vec{u} \times \vec{v}) \cdot \vec{\sigma}}-\llbracket U, V \rrbracket\right\| .	
+	$$			
+	对于第一项,使用（ii）,我们得到
+	$$
+	\begin{aligned}
+		\left\|A-e^{2 i(\vec{u} \times \vec{v}) \cdot \vec{\sigma}}\right\| & =\left\|e^{2 i(\vec{b} \times \vec{c}) \cdot \vec{\sigma}}-e^{2 i(\vec{u} \times \vec{v}) \cdot \vec{\sigma}}\right\| \\
+		& \leq 2\|\vec{b} \times \vec{c}-\vec{u} \times \vec{v}\| \\
+		& =2\|(\vec{b}-\vec{u}+\vec{u}) \times(\vec{c}-\vec{v}+\vec{v})-\vec{u} \times \vec{v}\| \\
+		& =2\|(\vec{b}-\vec{u}) \times(\vec{c}-\vec{v})+(\vec{b}-\vec{u}) \times \vec{v}+\vec{u} \times(\vec{c}-\vec{v})\| \\
+		& =O\left(\epsilon^3\right) .
+	\end{aligned}
+	$$
+	对于第二项,使用（iii）和（iv）可以得出
+	$$
+	\left\|e^{2 i(\vec{u} \times \vec{v}) \cdot \vec{\sigma}}-\llbracket U, V \rrbracket\right\|=\left\|e^{-[\vec{u} \cdot \vec{\sigma}, \vec{v} \cdot \vec{\sigma}]}-\llbracket U, V \rrbracket\right\|=O\left(\epsilon^3\right).
+	$$
+\end{proof}
+
+\begin{theorem}[Solovay–Kitaev] 
+	如果一组单量子位量子门生成 $\mathrm{SU}(2)$ 的稠密子群,那么对于任意 $\epsilon > 0$,存在一个正整数 t,使得任意单量子比特上的演化算子 $U$ 都可以被这组量子门及其逆中最多t个门的乘积近似,误差在 $\epsilon$ 以内.如果有两组这样的量子门集,那么使用其中一组实现的任何 t 门电路都可以使用另一组中 $t \cdot \text{poly}\log(t/\epsilon)$ 个门的电路来实现,且精度为 $\epsilon$.并且存在一个经典算法可以在时间 $t \cdot \text{poly}\log(t/\epsilon)$ 内找到这个电路.\cite{48}
+\end{theorem}
+\begin{proof}
+	只需考虑如何通过来自给定通用门集 $\Gamma$ 的门序列,将任意 $U \in$ $\mathrm{SU}(2)$ 近似到精度 $\epsilon$.
+	首先,取$\Gamma$元素的乘积构成一个新的通用门集$\Gamma_0$,对于某个足够小的常数$\epsilon_0$,这个新的通用门集是$\mathrm{SU}(2)$的$\epsilon_0^2$网.由于 $\epsilon_0$ 是一个常数,所以构造 $\Gamma_0$ 的开销是恒定的.
+	
+	取$V_0 \in \Gamma_0$,使得 $\left\|U-V_0\right\| \leq \varepsilon_0^2$.因为 $\left\|U-V_0\right\|=\left\|U V_0^{\dagger}-I\right\|$, 所以有 $U V_0^{\dagger}. \in S_{\epsilon_0^2}$.如果 $\epsilon_0$ 足够小,那么 $\epsilon_0^2<k \epsilon_0^{3/2}=\epsilon_1$,所以 $U V_0^{\dagger} \in S_{\epsilon_1}$.
+	
+	因为 $\Gamma_0$ 是 $\mathrm{SU}(2)$ 的 $\epsilon_0^2$ 网,所以它是 $S_{\epsilon_0}$ 的 $\epsilon_0^2$ 网.因此, $\Gamma_1$ 是 $S_{\epsilon_1}$ 的 $\epsilon_1^2$ 网,所以有$V_1 \in \Gamma_1$ ,使得 $\left\|U V_0^{\dagger}-V_1\right| \leq \epsilon_1^2<k \epsilon_1^{3 / 2}=\epsilon_2$ ,即$\Gamma_1$ 是一个 $\epsilon_1^2$ 网. 也就是说 $U V_0^{\dagger} V_1^{\dagger}-I \in S_{\epsilon_2}$.
+	
+	一般来说,假设可以得到 $V_0, V_1, \ldots, V_{i-1}$,那么 $U V_0^{\dagger} V_1^\dagger \ldots V_{i-1}^\dagger \in S_{\epsilon_i}$.由于 $\Gamma_i$ 是 $S_{\epsilon_i}$ 的 $\epsilon_i^2$ 网,就可以找到 $V_i \in \Gamma_i$,使得 $\left\|U V_0^\dagger V_1^\dagger \ldots V_{i-1}^\dagger - V_i\right\| \leq \epsilon_i^2$.反过来,这也就意味着 $U V_0^\dagger V_1^\dagger \dots V_i^\dagger \in S_{\epsilon_{i+1}}$.
+	
+	重复这个过程 $t$ 次, $V_t \ldots V_1 V_0$ 就能很好地近似 $U$:有 $\left\|U-V_t \ldots V_1 V_0\right\|\leq \epsilon_t^2$.如果认为来自 $\Gamma_0$ 的门是基本的\footnote{为了实现这些门,只需要使用来自 $\Gamma$ 集合的一定数量的门.因此,如果我们将 $\Gamma$ 中的门作为基本门来考虑,那么实现这些基本门所需的额外成本只是一个常数因子.}.实现一个来自 $\Gamma_i$ 的门所需的基本门数是 $5^i$,所以实现近似中用到的门的总数是 $\sum_{i=0}^t 5^i=\left(5^{t+1}-1\right) / 4=O\left(5^t\right)$.为了使总体误差不超过 $\epsilon$,需要让 $\epsilon_t^2=\left(\frac{k^2 \epsilon_0}{k^2}\right)^{(3 / 2)^t} \leq \epsilon$,即:   
+	
+	\begin{equation}
+		\left(\frac{3}{2}\right)^t>\frac{\frac{1}{2} \log \left(k^2 \epsilon\right)}{log \left(k^2 \epsilon_0\right)}.
+	\end{equation}
+	
+	因此,使用的门数是 
+	$$
+	O\left(\log ^{\nu} \frac{1}{6}\right),
+	$$ 
+	其中 $\nu=\log 5 / \log \frac{3}{2}$.
+	
+\end{proof}
+Solovay–Kitaev定理也说明了任何一组量子门都可以被通用量子门集合所近似,后续的研究发现了不同的通用量子门集集合没有好坏之分,并且也证明了寻找近似值所需要的时间是$poly(log1/{\epsilon})$的\cite{48}\cite{49},下面给出通用量子门集合的例子.
+
+\begin{example}
+	任何 $2 \times 2$ 的酉矩阵都可以被表示成
+	\begin{equation*}
+		\begin{aligned}
+			& \left(
+			\begin{array}{cc}
+				e^{i \delta} & 0 \\
+				0        & e^{i \delta}
+			\end{array}
+			\right) \cdot
+			\left(
+			\begin{array}{cc}
+				e^{i \alpha/2} & 0 \\
+				0        & e^{-i \alpha/2}
+			\end{array}
+			\right) \cdot 
+			\left(
+			\begin{array}{cc}
+				\cos \frac{\theta}{2} & \sin \frac{\theta}{2} \\
+				-\sin \frac{\theta}{2} & \cos \frac{\theta}{2}
+			\end{array}
+			\right) \cdot
+			\left(
+			\begin{array}{cc}
+				e^{i \beta/2} & 0 \\
+				0        & e^{-i \beta/2}
+			\end{array}
+			\right),
+		\end{aligned}
+	\end{equation*}
+	其中 $\delta$, $\alpha$, $\theta$, $\beta$ 都是实数,并且对任何的$W\in \mathrm{SU}(2)$都可以表示为
+	\begin{equation*}
+		\left(
+		\begin{array}{cc}
+			e^{i \alpha/2} & 0 \\
+			0        & e^{-i \alpha/2}
+		\end{array}
+		\right) \cdot
+		\left(
+		\begin{array}{cc}
+			\cos \frac{\theta}{2} & \sin \frac{\theta}{2} \\
+			-\sin \frac{\theta}{2} & \cos \frac{\theta}{2}
+		\end{array}
+		\right) \cdot
+		\left(
+		\begin{array}{cc}
+			e^{i \beta/2} & 0 \\
+			0        & e^{-i \beta/2}
+		\end{array}
+		\right).
+	\end{equation*}
+\end{example}
+
+对于量子算法来说,设$n$是输入的量子比特数,如果量子电路中的门的数量是$O(poly(n))$,那么可以认为这个量子算法是高效的.
+
+\subsection{张量积假设}
+对于一个由$m$个比特构成的量子态, 其状态空间是各个量子比特状态空间的张量积, 记为$H = \bigotimes_{i=0}^{m-1} H_i$.设$|\psi_i\rangle$是$H_i$中的状态向量, 则整体的量子态可表示为
+\begin{align}
+	|\Psi\rangle = |\psi_0\rangle \otimes |\psi_1\rangle \otimes \cdots \otimes |\psi_{m-1}\rangle.
+\end{align}
+
+然而, 并非所有$H$中的量子态都可以以这种形式表示, 因为如果是纠缠态的量子比特, 那么就分不开成单独的量子比特的张量积.\par 设$\{|e_j^{(i)}\rangle\}_{j\in[N_i]}$是$H_i$的基, 则$H$中的一个一般的量子态可以表示为
+\begin{align}
+	|\Psi\rangle = \sum_{j_0, \ldots, j_{m-1}} c_{j_0, \ldots, j_{m-1}} |e_{j_0}^{(0)}\rangle \otimes \cdots \otimes |e_{j_{m-1}}^{(m-1)}\rangle.
+\end{align}
+
+一般为了方便也可以这样写:  $\ket{0} \otimes \ket{0}$=$\ket{00}$=$\ket{0,0}$= $\ket{0}\ket{0}$, $\ket{0}^{\otimes n} = \ket{0^{\otimes n}}$.
+
+张量积的运算也满足:
+
+$$\langle u \otimes v | w \otimes x \rangle = \langle u | w \rangle \langle v | x \rangle,$$
+这是容易验证的.
+
+对于矩阵$A \in \mathbb{C}^{M\times N},B \in \mathbb{C}^{p\times q},C\in \mathbb{C}^{N\times M},DB \in \mathbb{C}^{q\times p}$.有:
+
+\begin{spacing}{1.7}
+\begin{align*}
+	(A \otimes B)(C \otimes D) &= 
+	\begin{bmatrix}
+		a_{11}B & \cdots & a_{1N}B \\
+		\vdots & \ddots & \vdots \\
+		a_{M1}B & \cdots & a_{MN}B
+	\end{bmatrix}
+	\begin{bmatrix}
+		c_{11}D & \cdots & c_{1M}D \\
+		\vdots & \ddots & \vdots \\
+		c_{N1}D & \cdots & c_{NM}D
+	\end{bmatrix} \\
+	&= \begin{bmatrix}
+		\sum_{j=1}^N a_{1j} c_{j1} BD & \cdots & \sum_{j=1}^N a_{1j}  c_{jM} BD \\
+		\vdots & \ddots & \vdots \\
+		\sum_{j=1}^N a_{Mj} c_{j1} BD & \cdots & \sum_{j=1}^N a_{Mj} c_{jM}  BD
+	\end{bmatrix} \\
+	&= (AC) \otimes (BD)
+\end{align*}
+\end{spacing}
+
+\subsection{量子测量假设}
+
+\subsubsection{投影测量}
+一个满足
+\begin{enumerate}
+	\centering
+	\item $H= H^\dagger$,
+	\item $H^2 = H$.
+\end{enumerate}
+的矩阵被称为投影矩阵.
+
+取投影矩阵$H$的特征值$m$对应的一个特征向量$ \ket{v_m} $,那么有$H \ket{v_m} =m \ket{v_m} $.考虑矩阵$\sum\limits_{m} m\ket{v_m}\bra{v_m}$,注意到$ m\ket{v_m}\bra{v_m}\ket{v_m}=m \ket{v_m}=H\ket{v_m}$,并且特征向量不可能为0,有$H=\sum\limits_{m} m\ket{v_m}\bra{v_m}$,结合$H^2 = H$,得出$H=\sum\limits_{m} \ket{v_m}\bra{v_m}$.
+
+投影测量是由一组投影矩阵$\{H_0, \ldots, H_{m-1}\}$集合描述的测量,如果$H_0 + \cdots + H_{m-1} = I.$那么,这样的测量应用在系统 $X$ 的某个状态 $\ket{\psi}$ 上时,有:
+
+对于每个 $k \in \{0, \ldots, m-1\}$,测量结果是 $k$,概率等于
+\begin{equation}
+\Pr(\text{结果是} k) = \|H_k \ket{\psi}\|^2 = \langle\psi|H_k|\psi\rangle
+\end{equation}
+
+此时$X$ 的量子态变为
+\begin{equation}
+\frac{H_k \ket{\psi}}{\|H_k \ket{\psi}\|}.
+\end{equation}
+
+从数学的角度来看,这就是在已经固定了某种态的前提下,按照预先得到这些态的可能性重新分配一下量子态而已.除此之外,我们也可以选择除 $\{0, \ldots, m-1\}$ 之外的其他结果进行投影测量.换句话说,对于任何有限非空集 $\Sigma$,如果我们有一组满足$\sum\limits_{a \in \Sigma} H_a = I,$
+的投影矩阵集合 $\{H_a : a \in \Sigma\}$,那么对于 $a \in \Sigma$,测量结果是 $a$,概率等于$\Pr(\text{结果是 } a) = \|H_a \ket{\psi}\|^2$,对于测量产生的任何结果 $a$, $X$ 的状态变为$\frac{H_a \ket{\psi}}{\|H_a \ket{\psi}\|}$,这与前面是类似的.
+
+\begin{example}
+标准基测量,选取的投影矩阵集是 $\{\ket{a}\bra{a} : a \in \Sigma\}$,其中 $\Sigma$ 是系统 $X$ 的经典状态集.
+
+例如测量$\ket{+}$,他对应的可能结果是0,1.
+$$
+\text{Pr(结果为0)} = \left\| \ket{0}\bra{0} \ket{+}\right\|^2 = \left| \frac{1}{\sqrt{2}} \right|^2 = \frac{1}{2},
+$$
+$$
+\text{Pr(结果为1)} = \left\|\ket{1}\bra{1} \ket{+} \right\|^2 = \left| \frac{1}{\sqrt{2}} \right|^2 = \frac{1}{2}.
+$$
+\end{example}
+
+\begin{example}
+假设一个由三个量子比特构成的系统处于量子态:
+$$
+\ket{a_0}=\dfrac{\ket{0}\ket{+}\ket{-}+\ket{1}\ket{0}\ket{0}-\ket{1}\ket{1}\ket{1}}{\sqrt{3}}
+$$
+
+在中间位置上执行标准基测量,问测量结果为0的概率,以及该结果对应塌缩后的量子态是什么.
+
+显然中间量子位测量后为0的概率是$\dfrac{1}{2}$,可能出现0的情况量子位是$-\dfrac{\ket{0}\ket{0}\ket{1}}{2\sqrt{3}}+\dfrac{\ket{0}\ket{0}\ket{0}}{\sqrt{3}}+\dfrac{\ket{1}\ket{0}\ket{0}}{2\sqrt{3}}$,塌缩后结果为$\dfrac{\ket{0}\ket{0}\ket{-}+\sqrt{2}\ket{1}\ket{0}\ket{0}}{\sqrt{3}}$.
+\end{example}	
+	
+	
+假设我们有两个系统 $X, Y$ 处于量子态 $\ket{\psi}$,并且在系统 $X$ 上描述的集合 $\{H_a : a \in \Sigma\}$ 执行了投影测量,而对 $Y$ 什么也没做,这就是相当于对联合系统进行了由集合$\{H_a \otimes I : a \in \Sigma\}$描述的投影测量.测量结果 $a$ 出现的概率是
+$\|(H_a \otimes I) \ket{\psi}\|^2,$并且在结果 $a$ 出现的情况下, $(X, Y)$ 的量子态变为$\frac{(H_a \otimes I) \ket{\psi}}{\|(H_a \otimes I) \ket{\psi}\|}.$
+
+\subsubsection{使用标准基集合的投影测量}
+
+任意的投影测量都可以使用酉操作,标准基测量和一个额外的工作空间系统来代替,下面是证明.
+
+假设 $X$ 是一个系统,集合
+$\{H_0, \ldots, H_{m-1}\}$是对 $X$ 的投影测量.为了方便,假设我们测量的可能结果集是$\{0, \ldots, m-1\}.$ 不过在这里的 $m$ 不一定等于 $X$ 对应的经典结果数量—,另外设 $n$ 是 $X$ 对应的经典结果数量,这意味着每个矩阵 $H_k$ 是一个 $n \times n$ 投影矩阵.由于 $\{H_0 \ldots, H_{m-1}\}$ 代表一次投影测量,因此满足$\sum_{k = 0}^{m-1} H_k = I_n.$
+
+我们的目标是执行一个过程,其效果与在 $X$ 上执行这次投影测量相同,但只使用酉操作和标准基测量来完成.
+
+设额外的工作空间系统为 $Y$, $Y$ 的经典状态集设为$\{0, \ldots, m-1\},$
+这与投影测量的结果集相同.想法是在 $Y$ 上执行一个标准基测量,并通过一些变换使得这次测量的结与在 $X$ 上的投影测量结果等效.首先假设 $Y$ 初始化为某个固定状态,不妨设为$\ket{0}.$
+
+为了让 $Y$ 的标准基测量能够和 $X$ 的信息产生联系,考虑在系统 $(Y, X)$ 上执行一个酉变换.选取矩阵:
+\begin{equation}
+M = \sum_{k=0}^{m-1} \ket{k}\bra{0} \otimes H_k= \begin{pmatrix}
+	H_0 & 0 & \cdots & 0 \\
+	H_1 & 0 & \cdots & 0 \\
+	\vdots & \vdots & \ddots & \vdots \\
+	H_{m-1} & 0 & \cdots & 0
+\end{pmatrix}.
+\end{equation}
+(这是一个分块矩阵,矩阵中的每个 $0$ 表示一个完全由零填充的 $n \times n$ 矩阵.)
+
+在这里, $M$ 显然不是一个酉矩阵(除非 $m=1$,在这种情况下,$H_0 = I,~M=I$).不过由于$\{H_0, \ldots, H_{m-1}\}$ 是一次投影测量,显然$M$ 的前$n$ 列是正交的.也可以通过计算来验证,对于$j \in \{0, \ldots, n-1\}$, $M$中的第$j$ 列可以表示为:
+\begin{equation}
+|\psi_j\rangle  = \sum_{k=0}^{m-1} |k\rangle \otimes H_k |j\rangle.
+\end{equation}
+
+取$i, j \in \{0, \ldots, n-1\}$,那么有:
+\begin{align*}
+\langle \psi_i | \psi_j \rangle 
+&= \left(\sum_{k=0}^{m-1} |k\rangle \otimes H_k |i\rangle\right)^\dagger \left(\sum_{l=0}^{m-1} |l\rangle \otimes H_l |j\rangle\right) \\
+&= \sum_{k=0}^{m-1} \sum_{l=0}^{m-1} \langle k|l\rangle \langle i| H_k H_l |j\rangle \\
+&= \sum_{k=0}^{m-1} \langle i| H_k H_k |j\rangle = \sum_{k=0}^{m-1} \langle i| H_k |j\rangle \\
+&= \langle i| I |j\rangle = \begin{cases} 1 & i=j \\ 0 & i \neq j \end{cases}.
+\end{align*}
+
+由于前面是正交的,后面都是0.接下来,可以用一些不同的复数项替换所有剩余的零项,使得整个矩阵是酉矩阵:
+
+\begin{equation}
+U = \begin{pmatrix}
+	H_0 & ? & \cdots & ? \\
+	H_1 & ? & \cdots & ? \\
+	\vdots & \vdots & \ddots & \vdots \\
+	H_{m-1} & ? & \cdots & ?
+\end{pmatrix}.
+\end{equation}
+(对于具体的矩阵 $\{H_0, \ldots, H_{m-1}\}$,可以使用Schmidt正交化计算出来.)
+
+最后测量过程如下:首先初始化$Y$为$\ket{0}$, $X$的初始状态是$\phi$.在联合系统 $(Y, X)$ 上执行 $U$,即:
+\begin{equation}
+U(\ket{0}\times\ket{\phi})=\sum_{k=0}^{m-1} \ket{k}\bra{0} \otimes H_k\ket{0}\times\ket{\phi}= \sum_{k=0}^{m-1} |k\rangle \otimes H_k |j\rangle.
+\end{equation}
+
+当我们在 $Y$ 上做标准基测量时,获得每个结果 $k$ 的概率$\|H_k |\phi\rangle\|^2,$ 此时, $(Y, X)$ 的状态塌缩为$|k\rangle \otimes \frac{H_k |\phi\rangle}{\|H_k |\phi\rangle\|}.$因此, $Y$ 测量结果和在 $X$ 上直接执行由 $\{H_0, \ldots, H_{m-1}\}$ 描述的投影测量一样.
+
+
+
+
+\section{量子电路}
+首先可以考虑这样一个简单的例子:\\
+$$
+	\begin{quantikz}
+		\lstick{y}&\gate{H}&\gate{X}&
+	\end{quantikz}
+$$
+
+左侧代表量子比特,名为$y$,由于一般来说基态较为容易制备,因此通常都是以$\ket{0}$作为初始.电路从左到右执行,第一个操作是通过$H$门(见\cref{H-gate}),第二个操作是通过泡利$X$门,注意到$X\ket{0}=\ket{1},~X\ket{1}=\ket{0}$,因此也被称为量子非门,在量子电路中也表示为 \begin{quantikz}& \targ{} & \end{quantikz}.
+
+接下来是另一个例子:
+\begin{Quantikz}
+	\centering
+	\begin{quantikz}
+		\lstick{$\ket{a}$} & \ctrl{1} \gategroup[2,steps=1,style={dashed,rounded corners,inner xsep=2pt},background,label style={label position=below,anchor=north,yshift=-0.2cm}]{CNOT}& \rstick{$\ket{a}$} \\
+		\lstick{$\ket{b}$} & \targ{} & \rstick{$\ket{a \oplus b}$}
+	\end{quantikz}
+	\caption{受控非门}
+\end{Quantikz}
+
+意思是如果输入的控制量子比特$\ket{a}$是$\ket{1}$,那么对目标比特$\ket{b}$进行非门操作,如果是$\ket{0}$那么将不执行非门操作,其中$a \oplus b = (a + b) \mod 2$.
+
+除此之外,还有:
+\begin{Quantikz}
+	\centering
+	% 交换门
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\begin{quantikz}
+			\lstick{$\ket{a}$} & \swap{1} & \rstick{$\ket{b}$} \\
+			\lstick{$\ket{b}$} & \targX{} & \rstick{$\ket{a}$}
+		\end{quantikz}
+		\caption{交换门}
+	\end{minipage}
+	\hfill
+	% Toffoli门
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\begin{quantikz}
+			& \ctrl{1} & \\
+			& \ctrl{1} &  \\
+			& \targ{}  & 
+		\end{quantikz}
+		\caption{Toffoli门}
+	\end{minipage}
+	\hfill
+	% Fredkin门
+	\begin{minipage}[b]{0.3\textwidth}
+		\centering
+		\begin{quantikz}
+			& \ctrl{1} &  \\
+			& \swap{1} & \\
+			& \targX{} & 
+		\end{quantikz}
+		\caption{Fredkin门}
+	\end{minipage}
+\end{Quantikz}
+
+其中,多控制的意思是当控制量子比特全是$\ket{1}$时,才会激活下面的操作.相对于受$\ket{1}$控制的量子电路,我们自然而然的也会考虑受$\ket{0}$控制的量子电路,在电路图中记为空心圆点,下面是一个例子:
+\begin{Quantikz}
+	\centering
+\begin{quantikz}
+	& \octrl{1} & \qw \\ % 空心控制节点,控制下面的目标节点
+	& \targ{} & \qw % 目标节点
+\end{quantikz}
+\caption{零控制非门}
+\end{Quantikz}
+
+电路中门的总数称为电路的大小.因此,假设电路中的门代表基本运算,那么电路的大小就代表它所需的基本运算数量,也就是计算成本.不过电路的大小也不一定直接对应运行时间,比如一些操作之前相互不影响,那么几个门也可以同时进行.
+
+另一种衡量电路效率的方法是电路的深度,表示从输入线路到输出线路的任何路径上遇到的最大门数,这种方法考虑到了并行化的可能性,不过在目前的算法中考虑较少.
+
+事实上,我们也可以为不同的逻辑门分配不同的成本,例如当我们在查询模型中工作并计算电路对输入函数(以黑盒的形式)进行的查询次数时,实际上将成本分给了查询门,其它的门则是零成本.
+
+\section{量子信息限制}
+\subsection{不可克隆定理}
+\begin{theorem}[不可克隆定理]:设 $ X $ 和 $ Y $ 是对应同一经典状态集 $ \Sigma $(\cref{classicalstate}) 的两个量子系统,且 $ \Sigma $ 至少有两个元素.不存在 $ Y $ 中的一个量子态 $ \ket{\phi} $ 和量子门 $ U $,使得对于 $ X $ 的每一个量子态 $ \ket{\psi} $,都有$U(\ket{\psi} \otimes \ket{\phi}) = \ket{\psi} \otimes \ket{\psi}.$
+\end{theorem}
+
+\begin{proof}
+	
+	取 $ a, b \in \Sigma $ 且 $ a \neq b $.假设存在 $ \ket{\phi} $$\in$$ Y $ 和一个量子门 $ U $ ,使得 $ U(\ket{\psi} \otimes \ket{\phi}) = \ket{\psi} \otimes \ket{\psi} $ 对 $ X $ 中的每一个量子态 $ \ket{\psi} $成立,那么有
+	$U(\ket{a} \otimes \ket{\phi}) = \ket{a} \otimes \ket{a} ,~ U(\ket{b} \otimes \ket{\phi}) = \ket{b} \otimes \ket{b}.$
+	
+	由张量积运算的线性有:
+	$
+	U\left(\left(\frac{1}{\sqrt{2}}\ket{a} + \frac{1}{\sqrt{2}}\ket{b}\right) \otimes \ket{\phi}\right) = \frac{1}{\sqrt{2}}\ket{a} \otimes \ket{a} + \frac{1}{\sqrt{2}}\ket{b} \otimes \ket{b}.
+	$
+	由于 $ U(\ket{\psi} \otimes \ket{\phi}) = \ket{\psi} \otimes \ket{\psi} $ 对每一个量子态 $ \ket{\psi} $ 成立,那么也有
+	
+	\begin{align*}
+		&U\left(\left(\frac{1}{\sqrt{2}}\ket{a} + \frac{1}{\sqrt{2}}\ket{b}\right) \otimes \ket{\phi}\right) \\
+		=& \left(\frac{1}{\sqrt{2}}\ket{a} + \frac{1}{\sqrt{2}}\ket{b}\right) \otimes \left(\frac{1}{\sqrt{2}}\ket{a} + \frac{1}{\sqrt{2}}\ket{b}\right) \\
+		=& \frac{1}{\sqrt{2}}\ket{a} \otimes \ket{a} + \frac{1}{\sqrt{2}}\ket{a} \otimes \ket{b} + \frac{1}{\sqrt{2}}\ket{b} \otimes \ket{a} + \frac{1}{\sqrt{2}}\ket{b} \otimes \ket{b} \\
+		\neq &\frac{1}{\sqrt{2}}\ket{a} \otimes \ket{a} + \frac{1}{\sqrt{2}}\ket{b} \otimes \ket{b}.
+	\end{align*}
+	
+	
+	因此,不存在一个状态 $ \ket{\phi} $ 和一个酉操作 $ U $,使 $ U(\ket{\psi} \otimes \ket{\phi}) = \ket{\psi} \otimes \ket{\psi} $ 对每一个量子态向量 $ \ket{\psi} $ 都成立.
+\end{proof}
+
+不过单纯想复制一个已知量子态$\ket{x}$,还是可以简单的通过CNOT门来实现的.
+\begin{Quantikz}
+	\centering
+	\begin{quantikz}
+		\lstick{$\ket{x}$} & \ctrl{1}& \rstick{$\ket{x}$} \\
+	\lstick{$\ket{0}$} & \targ{} & \rstick{$\ket{x}$}
+	\end{quantikz}
+	\caption{复制已知量子态}
+\end{Quantikz}
+
+
+\subsection{全局相位的无关性}
+
+设 $|\psi\rangle$ 和 $|\phi\rangle$ 是表示某系统的量子态的单位向量,假设存在一个复数 $\alpha$($|\alpha| = 1$), 使得$|\phi\rangle = \alpha |\psi\rangle.$我们将 $\alpha$ 称为全局相位.
+
+对于$|\psi\rangle$,任意的标准基 $x$ 出现概率是 $|\langle x | \psi \rangle|^2$.
+
+对于 $|\phi\rangle$,任意的标准基 $x$ 出现概率是 $|\langle x | \phi \rangle|^2 = |\alpha \langle x | \psi \rangle|^2 = |\alpha|^2 |\langle x | \psi \rangle|^2 = |\langle x | \psi \rangle|^2$.
+
+由于 $|\alpha| = 1$,这两种量子态标准基测量结果相同.
+
+下面考虑对这两个量子态都应用任意酉操作 $U$ .第一个量子态变为$U|\psi\rangle,$ 第二个量子态变为$U|\phi\rangle = \alpha U|\psi\rangle.$ 也就是说,通过任意量子门后,两个量子态仍然只相差同一个全局相位 $\alpha$.
+
+因此,无论这两个量子态应用什么操作,也总是只会相差一个全局相位,无法通过量子测量来区分.
+
+
+\subsection{非正交量子态不能完美区分}
+
+如果我们有两个非正交量子态 $|\psi\rangle$ 和 $|\phi\rangle$,即 $\langle \phi | \psi \rangle \neq 0$,那么就不能完美区分它们.
+
+一个量子电路如果能够说它完美地区分了$|\psi\rangle$ 和 $|\phi\rangle$,那么需要最后测量结果中一个状态为 0 ,而另一个状态为 1.也就是要做到这样:
+
+\begin{minipage}[t]{0.5\textwidth}
+	\centering
+	\begin{quantikz}
+		\lstick{$|\psi\rangle$} & \gate[wires=2]{U} & \meter{} & \cw & \rstick{0} \\
+		\lstick{$|0\ldots0\rangle$} & & \qw & \qw 
+	\end{quantikz}
+\end{minipage}%
+\begin{minipage}[t]{0.5\textwidth}
+	\centering
+	\begin{quantikz}
+		\lstick{$|\phi\rangle$} & \gate[wires=2]{U} & \meter{} & \cw & \rstick{1} \\
+		\lstick{$|0\ldots0\rangle$} & & \qw & \qw 
+	\end{quantikz}
+\end{minipage}
+其中,$U$ 代表电路中所有量子门的组合.
+
+现在,考虑 $|\psi\rangle$ 在电路上运行.在测量刚要执行之前的状态可以写为
+$U(|0 \ldots 0\rangle |\psi\rangle) = | \gamma_0 \rangle |0\rangle + | \gamma_1 \rangle |1\rangle$.$| \gamma_0 \rangle$ 和 $| \gamma_1 \rangle$,表示除了顶部量子比特之外的所有量子比特.顶部量子比特产生结果 0 和 1 的概率如下:
+
+$\Pr(\text{结果为 0}) = \| | \gamma_0 \rangle \|^2 ,~\Pr(\text{结果为 1}) = \| | \gamma_1 \rangle \|^2.$
+
+量子态$|\psi\rangle$ 通过量子电路后输出 0,故有 $| \gamma_1 \rangle = 0$,即
+\begin{equation*}
+U(|0 \ldots 0\rangle |\psi\rangle) = | \gamma_0 \rangle |0\rangle.
+\end{equation*}
+等式两边左乘$U^\dagger$ 得到:
+\begin{equation}\label{eq.3.3.1}
+|0 \ldots 0\rangle |\psi\rangle = U^\dagger(| \gamma_0 \rangle |0\rangle).
+\end{equation}
+
+类似地有
+\begin{equation*}
+U(|0 \ldots 0\rangle |\phi\rangle) = | \delta_1 \rangle |1\rangle
+\end{equation*}
+以及,
+\begin{equation}\label{eq.3.3.2}
+|0 \ldots 0\rangle |\phi\rangle = U^\dagger(| \delta_1 \rangle |1\rangle).
+\end{equation}
+
+\cref{eq.3.3.1},~\cref{eq.3.3.2}做内积有:
+$$
+\text{右边}=(U^\dagger(| \gamma_0 \rangle |0\rangle))^{\dagger} U^\dagger(| \delta_1 \rangle |1\rangle)= (\langle \gamma_0 | \langle 0 |) U U^\dagger(| \delta_1 \rangle |1\rangle) = (\langle \gamma_0 | \langle 0 |)(| \delta_1 \rangle |1\rangle) = \langle \gamma_0 | \delta_1 \rangle \langle 0 |  1\rangle = 0,
+$$
+$$
+0 = \text{左边}=(|0 \ldots 0\rangle |\psi\rangle)^{\dagger}(|0 \ldots 0\rangle |\phi\rangle) = \langle 0 \ldots 顶 0 | 0 \ldots 0\rangle \langle \psi | \phi\rangle = \langle \psi | \phi\rangle.
+$$
+
+也就是说这样的电路能够实现,需要 $|\psi\rangle$ 和 $|\phi\rangle$ 是正交,不妨代入试一下.
+
+假设量子态 $|\phi\rangle$ 和 $|\psi\rangle$正交($\langle \phi | \psi \rangle = 0$).可以通过执行例如$\{|\phi\rangle \langle \phi|, \, I - |\phi\rangle \langle \phi|\},$ 这些投影测量来完美地区分.
+
+对于量子态 $|\phi\rangle$,会得到:
+
+$$
+\| |\phi\rangle \langle \phi| |\phi\rangle \|_2 = \| |\phi\rangle \langle \phi|\phi\rangle \|_2 = \| |\phi\rangle \|_2 = 1,
+$$
+$$
+\| (I - |\phi\rangle \langle \phi|) |\phi\rangle \|_2 = \| |\phi\rangle - |\phi\rangle \langle \phi|\phi\rangle \|_2 = \| |\phi\rangle - |\phi\rangle \|_2 = 0.
+$$
+
+对于状态 $|\psi\rangle$,会得到:
+
+$$
+\| |\phi\rangle \langle \phi| |\psi\rangle \|_2 = \| |\phi\rangle \langle \phi|\psi\rangle \|_2 = \| 0 \|_2 = 0,
+$$
+$$
+\| (I - |\phi\rangle \langle \phi|) |\psi\rangle \|_2 = \| |\psi\rangle - |\phi\rangle \langle \phi|\psi\rangle \|_2 = \| |\psi\rangle \|_2 = 1.
+$$
+
+
+
+

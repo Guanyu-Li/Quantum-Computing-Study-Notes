@@ -1,0 +1,107 @@
+\documentclass[12pt,reqno]{report}
+\usepackage{amsfonts}
+\usepackage{stmaryrd}
+\usepackage[UTF8]{ctex}
+\usepackage{xeCJK} % 添加 xeCJK 宏包以使用中文数字
+\usepackage{fontspec} 
+\usepackage{mathtools}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{subfigure}
+\usepackage[ruled,linesnumbered,lined,boxed,commentsnumbered]{algorithm2e}
+\usepackage{geometry}
+\geometry{a4paper, left=27mm, right=27mm, top=28mm, bottom=25mm}
+\usepackage{graphicx,cases}
+\usepackage{xcolor}
+\usepackage{sectsty}
+\usepackage{braket}
+\usepackage{amsmath, amssymb, mathrsfs, amsthm}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xpatch}
+\usepackage{fancyhdr}
+\usepackage{tikz-cd}
+\usepackage{tikz}
+\usepackage{quantikz}
+\usepackage{newfloat}
+
+% 自定义章节标题格式
+\usepackage{titlesec}
+\titleformat{\chapter}
+{\centering\normalfont\huge\bfseries}{第\ \thechapter\ 章}{20pt}{\huge}
+\titleformat{\section}
+{\centering\normalfont\Large\bfseries}{\S\ \thesection}{1em}{\Large}
+\renewcommand\thechapter{\Chinese{chapter}} % 设置章标题为中文数字
+\renewcommand\thesection{\arabic{section}} % 设置章标题为阿拉伯数字
+\newcounter{romanpage}
+\usepackage{chngcntr}
+\counterwithin{figure}{section}  % 图形编号按节递增
+
+% 定义定理环境
+\newtheorem{theorem}{\hspace{2em} 定理}[section] % 使用[section]将定理与节相关联
+\newtheorem{explain}[theorem]{\hspace{2em} 注}
+\newtheorem{definition}[theorem]{\hspace{2em} 定义} % 使用 theorem 环境的编号
+\newtheorem{lemma}[theorem]{\hspace{2em} 引理} % 使用 theorem 环境的编号
+\newtheorem{corollary}[theorem]{\hspace{2em} 推论} % 使用 theorem 环境的编号
+\newtheorem{example}[theorem]{\hspace{2em} 例}
+\newtheorem{property}{\hspace{2em} 性质}
+%把定理后面的点去掉
+\makeatletter
+\AtBeginDocument{\xpatchcmd{\cref@thmoptarg}{\thm@headpunct{.}}{\thm@headpunct{}}{}{}}
+\AtBeginDocument{\xpatchcmd{\cref@thmnoarg}{\thm@headpunct{.}}{\thm@headpunct{}}{}{}}
+\makeatother
+
+\renewcommand{\proofname}{\bfseries\upshape 证明\nopunct}
+\newcounter{methodcount}[section] % 方法环境的计数器
+\newtheorem{method}[methodcount]{\hspace{2em} 方法} % 方法环境的样式
+\renewcommand\themethodcount{\chinese{methodcount}} % 方法环境的编号格式
+\renewcommand\theexample{\arabic{section}.\arabic{example}}
+\renewcommand\thetheorem{\arabic{section}.\arabic{theorem}} % 定理编号格式
+\renewcommand\thedefinition{\arabic{section}.\arabic{definition}} % 定义编号格式
+\crefname{theorem}{\textbf{定理}}{定理}
+\crefname{explain}{\textbf{注}}{注}
+\crefname{lemma}{\textbf{引理}}{引理}
+\crefname{example}{\textbf{例}}{例}
+\crefname{definition}{定义}{定义}
+\crefname{algorithm}{算法}{算法}
+\crefname{Quantikz}{量子电路}{量子电路}
+\DeclareFloatingEnvironment[fileext=qua, listname={List of Quantum Circuits}, name=量子电路, placement=ht] {Quantikz}
+\counterwithin{Quantikz}{section} 
+\crefformat{equation}{#2(#1)式#3}
+\usepackage{caption} 
+\captionsetup{font={small,it}}
+
+% 自定义定理样式,包括标题和后面的序号都加粗
+\newtheoremstyle{boldtheorem}{1em}{1em}{}{}{\normalfont}{}{1em}{{\thmname{#1}\ \thmnumber{\hspace{2em}#2}}}
+\theoremstyle{boldtheorem}
+\renewcommand{\theequation}{\ifnum\value{subsection}>0\relax\thesubsection.\else\thesection.\fi\arabic{equation}}
+% 定义公式编号的格式
+\renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
+%设置页眉
+\fancyhf{}  % 清空页眉和页脚
+\fancyhead[C]{\leftmark}  % 在页眉中间显示章节名称
+\fancyfoot[C]{$\cdot$\thepage$\cdot$} 
+\renewcommand{\chaptermark}[1]{\markboth{第 \thechapter 章\quad #1}{}}  % 调整章节标题的显示格式
+\renewcommand{\headrulewidth}{0.4pt}  % 页眉下方横线宽度
+\pagestyle{fancy}  % 恢复到正常的页眉页脚样式
+
+
+% 参考文献 
+\usepackage[backend=biber, style=gb7714-2015,url=false,doi=false]{biblatex}
+\addbibresource{refer.bib} % 指定引用的.bib文件
+
+\begin{document}
+	\title{\textsf{\huge 量子计算初学笔记}}
+	\author{李冠余}
+	\date{}
+	\maketitle
+   \include{./TeX_files/目录}
+   \pagenumbering{arabic} % 正文开始,设置页面编号为阿拉伯数字
+   % 设置1.5倍行间距
+   \begin{spacing}{1.5}
+   \include{./TeX_files/1}
+   \include{./TeX_files/2}
+   \include{./TeX_files/3}
+   \end{spacing}
+   %\include{./TeX_files/参考文献}
+\end{document}
